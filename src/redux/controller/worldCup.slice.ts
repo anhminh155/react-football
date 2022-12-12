@@ -16,6 +16,7 @@ interface worldCupState {
   matches: any;
   teams: TeamWorldCup[];
   standingsTotal: StandingsWorldCup | null;
+  competitions: any[];
 }
 
 // Define the initial state using that type
@@ -26,6 +27,7 @@ const initialState: worldCupState = {
   matches: [],
   teams: [],
   standingsTotal: null,
+  competitions: [],
 };
 
 const worldCupSlice = createSlice({
@@ -56,7 +58,8 @@ const worldCupSlice = createSlice({
         (state, action) => {
           const { code } = action.error;
           state.type = parseInt(code ?? "", 10) === 500 ? "error" : "warning";
-          state.message = "Failed to get response from server";
+          state.message =
+            "Failed to get response from server. Please try again in 10 seconds!!!";
           state.loading = false;
         }
       )
@@ -80,10 +83,28 @@ const worldCupSlice = createSlice({
       .addCase(fetchTeamMatchesWorldCup.fulfilled, (state, action: any) => {
         state.loading = false;
         console.log(action.payload);
-        state.matches = [...state.matches, ...action.payload.matches]
+        state.matches = [...state.matches, ...action.payload.matches];
+      })
+      .addCase(fetchCompetitionTierWorldCup.fulfilled, (state, action: any) => {
+        state.competitions = action.payload.competitions
       });
   },
 });
+export const fetchCompetitionTierWorldCup = createAsyncThunk(
+  "worldCup/competition_tier",
+  async (
+    tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | "TIER_FOUR",
+    { dispatch }
+  ) => {
+    const res: any = await Http.get(
+      API_FOOTBALL.worldCupTierCompetitions(tier)
+    );
+    if (res.data) {
+      const data = res.data as unknown;
+      return data;
+    }
+  }
+);
 
 export const fetchStandingsWorldCup = createAsyncThunk(
   "worldCup/standings",

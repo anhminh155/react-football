@@ -25,7 +25,9 @@ const Layout = (): JSX.Element => {
   return (
     <React.Fragment>
       <CHeader />
-      <Outlet />
+      {/* <div className=" bg-gray-100"> */}
+        <Outlet />
+      {/* </div> */}
     </React.Fragment>
   );
 };
@@ -41,8 +43,14 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/rank",
+        path: "/rankings",
         element: <Rank />,
+        children: [
+          {
+            path: "/rankings/:tournaments",
+            element: <Rank />,
+          },
+        ],
       },
       {
         path: "/bracket",

@@ -1,5 +1,6 @@
 import { Dropdown, Table } from "flowbite-react";
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import CLoadingPage from "../../components/CLoadingPage";
 import { useScrollBlock } from "../../hooks/useScrollBlock";
 import {
@@ -9,6 +10,7 @@ import {
 import { useDispatchRoot, useSelectorRoot } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { TeamWorldCup } from "../../types/football-world-cup";
+import ListCompetition from "./ListCompetition ";
 import ModalTeamMatches from "./ModalTeamMatches";
 
 type Props = {};
@@ -16,19 +18,21 @@ type Props = {};
 function Rank({}: Props) {
   const dispatch = useDispatchRoot();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { loading, matches, standingsTotal } = useSelectorRoot(
+  const { loading, matches, standingsTotal, competitions } = useSelectorRoot(
     (state: RootState) => state.worldCup
   );
-  const [selectTeam, setSelectTeam] = useState<any | undefined>(
-    undefined
-  );
-  const year = standingsTotal?.season.startDate.split("-")[0];
+  const [selectTeam, setSelectTeam] = useState<any | undefined>(undefined);
   const standings = standingsTotal?.standings;
   const [blockScroll, allowScroll] = useScrollBlock();
+  const location = useLocation();
+
+  const nextPathName =
+    location.pathname.split("/")[location.pathname.split("/").length - 1];
 
   React.useEffect(() => {
     dispatch(fetchStandingsWorldCup());
   }, []);
+
   React.useEffect(() => {
     if (showModal) {
       blockScroll();
@@ -89,25 +93,32 @@ function Rank({}: Props) {
     <CLoadingPage />
   ) : (
     <div className="mx-6">
-      <div className="inline-block bg-[#01b243] text-white text-lg p-2 my-3 border rounded-md">
-        <div className="flex">
-          <span className="pr-1">Bảng xếp hạng bóng đá World Cup:</span>
-          <span>{year}</span>
-          {/* <Dropdown inline={true} label={year} dismissOnClick={false}>
-            <Dropdown.Item>2014</Dropdown.Item>
-            <Dropdown.Item>2014</Dropdown.Item>
-            <Dropdown.Item>2014</Dropdown.Item>
-          </Dropdown> */}
+      <div className="desktop:flex gap-x-4 mobile:inline">
+        <div className="min-w-fit">
+          <div className=" bg-[#01b243] text-white text-lg p-2 mt-3 border rounded-t-md w-full">
+            ALL TOURNAMENTS
+          </div>
+          <ListCompetition />
         </div>
-      </div>
-      <div>
-        {RenderTable()}
-        <ModalTeamMatches
-          title={`${selectTeam?.name} national football team`}
-          data={matches}
-          isShow={showModal}
-          onChangeModal={setShowModal}
-        />
+        <div className="w-full">
+          <div className=" bg-[#01b243] text-white text-lg p-2 my-3 border rounded-md">
+            <div className="flex">
+              <span className="pr-1">
+                {
+                  competitions.find((value: any) => value.code === nextPathName)
+                    .name
+                }
+              </span>
+            </div>
+          </div>
+          {RenderTable()}
+          <ModalTeamMatches
+            title={`${selectTeam?.name} national football team`}
+            data={matches}
+            isShow={showModal}
+            onChangeModal={setShowModal}
+          />
+        </div>
       </div>
     </div>
   );

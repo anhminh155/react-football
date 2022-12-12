@@ -11,17 +11,18 @@ function CHeader({}: Props) {
   const [nav, setNav] = useState("home");
   const objGmt = [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
   const gmt = 7;
+
   return (
-    <header className="w-screen">
+    <header className="max-w-none">
       <div className="h-14 bg-[#2a3038] flex items-center px-6">
-        <div className="font-bold text-xl">
-          <span className=" text-white">WorldCup</span>
+        <div className="font-bold text-xl select-none cursor-pointer">
+          <span className=" text-white">Sport</span>
           <span className="text-[#3fa338]">Info</span>
         </div>
       </div>
       <div className="h-14 bg-[#05b244] flex items-center justify-between px-6">
         <div className="bg-[linear-gradient(180deg,#04a941,#059b3d)] h-14 flex items-center font-bold text-lg px-3 cursor-pointer">
-          <span className=" text-white">Bóng đá</span>
+          <span className=" text-white">Football</span>
         </div>
         <div className="">
           <Dropdown
@@ -33,20 +34,20 @@ function CHeader({}: Props) {
               if (e > 0) {
                 return <Dropdown.Item key={i}>+{e}</Dropdown.Item>;
               } else {
-                return <Dropdown.Item key={i} >{e}</Dropdown.Item>;
+                return <Dropdown.Item key={i}>{e}</Dropdown.Item>;
               }
             })}
           </Dropdown>
         </div>
       </div>
-      <div className="shadow-md h-11 flex items-center px-6 text-xl">
-        <div className="pr-3">
-          <Link to="/home">Home</Link>
+      <div className="shadow-md h-11 flex items-center px-6 text-xl divide-x ">
+        <div className=" px-2 h-full text-center flex items-center border border-l-1 border-r-transparent">
+          <Link to="/rankings/WC">Rankings</Link>
         </div>
-        <div className="pr-3">
-          <Link to="/rank">BXH</Link>
+        <div className=" px-2 h-full text-center flex items-center">
+          <Link to="/bracket">Bracket</Link>
         </div>
-        <div className="">
+        <div className=" px-2 h-full text-center flex items-center">
           <Link to="/bracket">Bracket</Link>
         </div>
       </div>
