@@ -5,23 +5,50 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import Home from "./pages/home";
 import Admin from "./pages/admin";
 import CErrorPage from "./components/CErrorPage";
+import CHeader from "./components/CHeader";
+import Bracket from "./pages/home/Bracket";
+import Rank from "./pages/home/Rank";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
+const Layout = (): JSX.Element => {
+  return (
+    <React.Fragment>
+      <CHeader />
+      <Outlet />
+    </React.Fragment>
+  );
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Layout />,
     errorElement: <CErrorPage />,
-  },
-  {
-    path: "/home",
-    element: <Home />,
+    children: [
+      {
+        path: "/home",
+        element: <Home />,
+      },
+      {
+        path: "/rank",
+        element: <Rank />,
+      },
+      {
+        path: "/bracket",
+        element: <Bracket />,
+      },
+    ],
   },
   {
     path: "/admin",
