@@ -25,6 +25,9 @@ export const API_FOOTBALL = {
   footballTeamCompetitions: (competition: string) =>
     `/v2/competitions/${competition}/teams`,
 
+  footballBestScorersCompetitions: (competition: string) =>
+    `/v2/competitions/${competition}/scorers`,
+
   worldCupTeamMatches: (idTeam: number) =>
     `/v2/teams/${idTeam}/matches?competitions=WC`,
 };

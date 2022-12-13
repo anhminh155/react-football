@@ -19,6 +19,10 @@ body {
 .border-blue-600 {
   border-color: #05b244;
 }
+.bg-opacity-50{
+  height: 100vh;
+}
+
 
 /* CSS Loading Football */
 .box-football {

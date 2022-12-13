@@ -5,11 +5,10 @@ import { RootState } from "../../redux/store";
 import { Props } from "../../types/define";
 import { IStanding, ITable } from "../../types/football-type";
 
-
 interface ITableStandings extends Props {
-  onSelectTable: any
+  onSelectTable: any;
 }
-function TableStandings({onSelectTable}: ITableStandings) {
+function TableStandings({ onSelectTable }: ITableStandings) {
   const { competitionsStandings } = useSelectorRoot(
     (state: RootState) => state.football
   );
@@ -43,7 +42,7 @@ function TableStandings({onSelectTable}: ITableStandings) {
                   <Table.Row
                     key={i}
                     onClick={() => {
-                      onSelectTable(table)
+                      onSelectTable(table);
                     }}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800 w-40 hover:bg-[#65bc85] hover:font-bold hover:cursor-pointer hover:text-white"
                   >
@@ -70,9 +69,9 @@ function TableStandings({onSelectTable}: ITableStandings) {
       }
     );
   };
-
+  const flag = competitionsStandings?.competition.code;
   return (
-    <div>
+    <div className="mb-2">
       <div className=" bg-[#01b243] text-white text-lg p-2 my-3 border rounded-md">
         <div className="flex">
           <span className="pr-1">
@@ -82,15 +81,15 @@ function TableStandings({onSelectTable}: ITableStandings) {
           {seasonYear}
         </div>
       </div>
-      {competitionsStandings?.competition.code !== ("WC" ?? "CLI") ? (
-        RenderTable()
-      ) : (
+      {flag === "WC" || flag === "CLI" || flag === "EC" ? (
         <Tabs.Group aria-label="Tabs with underline" style="underline">
           <Tabs.Item active={true} title="STANDINGS">
-            {RenderTable()}
+            <div className="-m-4">{RenderTable()}</div>
           </Tabs.Item>
-          <Tabs.Item title="BRACKET">BRACKET</Tabs.Item>
+          <Tabs.Item title="BEST PLAYER">BRACKET</Tabs.Item>
         </Tabs.Group>
+      ) : (
+        RenderTable()
       )}
     </div>
   );
