@@ -1,9 +1,12 @@
 import { combineReducers } from "@reduxjs/toolkit";
-
-import worldCupReducer from './controller/worldCup.slice'
+import { appReducer } from "./controller/app.slice";
+import { footballReducer } from "./controller/football.slice";
+import { worldCupReducer } from "./controller/worldCup.slice";
 
 const rootReducer = combineReducers({
-    worldCup: worldCupReducer,
+  app: appReducer,
+  worldCup: worldCupReducer,
+  football: footballReducer,
 });
 
 // export type RootState = ReturnType<typeof rootReducer>;

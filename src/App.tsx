@@ -5,16 +5,16 @@ import { RootState } from "./redux/store";
 import { Props } from "./types/define";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
-import { setMessageWC } from "./redux/controller/worldCup.slice";
+import { setMessage } from "./redux/controller/app.slice";
 
 function App(props: Props) {
-  const { message } = useSelectorRoot((state: RootState) => state.worldCup);
-  const dispatch = useDispatchRoot()
+  const { message } = useSelectorRoot((state: RootState) => state.app);
+  const dispatch = useDispatchRoot();
   React.useEffect(() => {
     const notify = () => toast.warning(message);
     if (message.length > 0) {
       notify();
-      dispatch(setMessageWC(''))
+      dispatch(setMessage(""));
     }
   }, [message]);
   return (

@@ -6,7 +6,12 @@ type Props = {};
 function CLoadingPage({}: Props) {
   return (
     <div className="h-[calc(100vh-156px)] flex items-center justify-center">
-      <Spinner aria-label="Default status example" />
+      <div className="box-football">
+        <div className="shadow" />
+        <div className="gravity">
+          <div className="ball" />
+        </div>
+      </div>
     </div>
   );
 }

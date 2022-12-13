@@ -7,12 +7,13 @@ import {
   StandingsWorldCup,
   TeamWorldCup,
 } from "../../types/football-world-cup";
+import { setMessage } from "./app.slice";
+import Utils from "../../common/utils";
 
 // Define a type for the slice state
 interface worldCupState {
   loading: boolean;
-  type: string;
-  message: string;
+  loadingModal: boolean;
   matches: any;
   teams: TeamWorldCup[];
   standingsTotal: StandingsWorldCup | null;
@@ -22,8 +23,7 @@ interface worldCupState {
 // Define the initial state using that type
 const initialState: worldCupState = {
   loading: false,
-  type: "",
-  message: "",
+  loadingModal: false,
   matches: [],
   teams: [],
   standingsTotal: null,
@@ -38,34 +38,24 @@ const worldCupSlice = createSlice({
     setLoadingWC: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setMessageWC: (state, action: PayloadAction<string>) => {
-      state.message = action.payload;
+    setLoadingModalWC: (state, action: PayloadAction<boolean>) => {
+      state.loadingModal = action.payload;
     },
   },
   extraReducers(builder) {
-    // .addCase(
-    //   (fetchMatchesWorldCup.pending, fetchTeamsWorldCup.pending),
-    //   (state, action) => {
-    //     console.log(action);
-    //     state.loading = true;
-    //   }
-    // )
     builder
       .addCase(
         (fetchMatchesAllWorldCup.rejected,
         fetchTeamsWorldCup.rejected,
-        fetchStandingsWorldCup.rejected),
-        (state, action) => {
-          const { code } = action.error;
-          state.type = parseInt(code ?? "", 10) === 500 ? "error" : "warning";
-          state.message =
-            "Failed to get response from server. Please try again in 10 seconds!!!";
+        fetchStandingsWorldCup.rejected,
+        fetchTeamMatchesWorldCup.rejected),
+        (state) => {
           state.loading = false;
+          state.loadingModal = false;
         }
       )
       .addCase(fetchTeamsWorldCup.fulfilled, (state, action: any) => {
         state.loading = false;
-
         state.teams = action.payload.teams;
         console.log(action);
       })
@@ -81,99 +71,92 @@ const worldCupSlice = createSlice({
         console.log(action);
       })
       .addCase(fetchTeamMatchesWorldCup.fulfilled, (state, action: any) => {
-        state.loading = false;
+        state.loadingModal = false;
         console.log(action.payload);
-        state.matches = [...state.matches, ...action.payload.matches];
-      })
-      .addCase(fetchCompetitionTierWorldCup.fulfilled, (state, action: any) => {
-        state.competitions = action.payload.competitions
+        state.matches = action.payload.matches;
       });
   },
 });
-export const fetchCompetitionTierWorldCup = createAsyncThunk(
-  "worldCup/competition_tier",
-  async (
-    tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | "TIER_FOUR",
-    { dispatch }
-  ) => {
-    const res: any = await Http.get(
-      API_FOOTBALL.worldCupTierCompetitions(tier)
-    );
-    if (res.data) {
-      const data = res.data as unknown;
-      return data;
-    }
-  }
-);
 
 export const fetchStandingsWorldCup = createAsyncThunk(
   "worldCup/standings",
   async (_data, { dispatch }) => {
-    dispatch(setLoadingWC(true));
-    const res_standing: any = await Http.get(
-      API_FOOTBALL.WORLD_CUP_2022_STANDINGS
-    );
-    const res_teams: any = await Http.get(API_FOOTBALL.WORLD_CUP_2022_TEAMS);
-    if (res_standing.data && res_teams.data) {
-      const data_teams = res_teams.data as unknown;
-      const data_standing = res_standing.data as unknown;
-      return {
-        data_teams: data_teams,
-        data_standing: data_standing,
-      };
+    try {
+      dispatch(setLoadingWC(true));
+      const res_standing: any = await Http.get(
+        API_FOOTBALL.WORLD_CUP_2022_STANDINGS
+      );
+      const res_teams: any = await Http.get(API_FOOTBALL.WORLD_CUP_2022_TEAMS);
+      if (res_standing.data && res_teams.data) {
+        const data_teams = res_teams.data as unknown;
+        const data_standing = res_standing.data as unknown;
+        return {
+          data_teams: data_teams,
+          data_standing: data_standing,
+        };
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingWC(false))
+      return error
     }
   }
 );
 
 export const fetchTeamMatchesWorldCup = createAsyncThunk(
   "worldCup/teamMatches",
-  async (idTeam: number) => {
-    const res: any = await Http.get(API_FOOTBALL.worldCupTeamMatches(idTeam));
-    if (res.data) {
-      const data = res.data as unknown;
-      return data;
+  async (idTeam: number, { dispatch }) => {
+    try {
+      const res: any = await Http.get(API_FOOTBALL.worldCupTeamMatches(idTeam));
+      if (res.data) {
+        const data = res.data as unknown;
+        return data;
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingWC(false))
+      return error
     }
   }
 );
 
 export const fetchMatchesAllWorldCup = createAsyncThunk(
   "worldCup/matchesALl",
-  async () => {
-    const res: any = await Http.get(API_FOOTBALL.WORLD_CUP_2022_MATCHES);
-    if (res.data) {
-      const data = res.data as unknown;
-      return data;
+  async (_data, { dispatch }) => {
+    try {
+      const res: any = await Http.get(API_FOOTBALL.WORLD_CUP_2022_MATCHES);
+      if (res.data) {
+        const data = res.data as unknown;
+        return data;
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingWC(false))
+      return error
     }
   }
 );
 
 export const fetchTeamsWorldCup = createAsyncThunk(
   "worldCup/teams",
-  async () => {
+  async (_data, { dispatch }) => {
     try {
       const res: any = await Http.get(API_FOOTBALL.WORLD_CUP_2022_TEAMS);
       if (res.data) {
         const data = res.data as unknown;
         return data;
       }
-    } catch (e) {
-      const {
-        response: { data, status },
-      } = e as unknown as {
-        response: { data: string; status: number };
-      };
-      throw {
-        name: "Request Failed",
-        message: data,
-        code: `${status}`,
-      };
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingWC(false))
+      return error
     }
   }
 );
 
-export const { setLoadingWC, setMessageWC } = worldCupSlice.actions;
+export const { setLoadingWC, setLoadingModalWC } = worldCupSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.worldCup;
 
-export default worldCupSlice.reducer;
+export const worldCupReducer = worldCupSlice.reducer;

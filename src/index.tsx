@@ -5,18 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Outlet,
-} from "react-router-dom";
-import Home from "./pages/home";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Admin from "./pages/admin";
 import CErrorPage from "./components/CErrorPage";
 import CHeader from "./components/CHeader";
 import Bracket from "./pages/home/Bracket";
-import Rank from "./pages/home/Rank";
+import Home from "./pages/home";
+import Rankings from "./pages/home/Rankings";
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -25,9 +21,7 @@ const Layout = (): JSX.Element => {
   return (
     <React.Fragment>
       <CHeader />
-      {/* <div className=" bg-gray-100"> */}
-        <Outlet />
-      {/* </div> */}
+      <Outlet />
     </React.Fragment>
   );
 };
@@ -44,11 +38,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/rankings",
-        element: <Rank />,
+        element: <Rankings />,
         children: [
           {
             path: "/rankings/:tournaments",
-            element: <Rank />,
+            element: <Rankings />,
           },
         ],
       },

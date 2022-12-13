@@ -1,16 +1,18 @@
-import { Dropdown, Navbar } from "flowbite-react";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Dropdown } from "flowbite-react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 type Props = {};
 
 type INav = "home" | "hxh" | "tips";
 
 function CHeader({}: Props) {
-  const navigate = useNavigate();
-  const [nav, setNav] = useState("home");
+  // const navigate = useNavigate();
+  // const location = useLocation();
   const objGmt = [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
   const gmt = 7;
+
+  // console.log(location.pathname.split("/"));
 
   return (
     <header className="max-w-none">
@@ -40,14 +42,14 @@ function CHeader({}: Props) {
           </Dropdown>
         </div>
       </div>
-      <div className="shadow-md h-11 flex items-center px-6 text-xl divide-x ">
-        <div className=" px-2 h-full text-center flex items-center border border-l-1 border-r-transparent">
+      <div className="shadow-md h-11 flex items-center px-6 text-xl divide-x bg-white">
+        <div className="px-2 h-full text-center flex items-center border border-l-1 border-r-transparent hover:text-[#3fa338]">
+          <Link to="/home">Home</Link>
+        </div>
+        <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
           <Link to="/rankings/WC">Rankings</Link>
         </div>
-        <div className=" px-2 h-full text-center flex items-center">
-          <Link to="/bracket">Bracket</Link>
-        </div>
-        <div className=" px-2 h-full text-center flex items-center">
+        <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
           <Link to="/bracket">Bracket</Link>
         </div>
       </div>
