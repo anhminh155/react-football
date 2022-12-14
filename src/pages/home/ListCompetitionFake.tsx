@@ -1,19 +1,18 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Utils from "../../common/utils";
 import { fetchCompetitionStandingsFootball } from "../../redux/controller/football.slice";
 import { useDispatchRoot, useSelectorRoot } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { Props } from "../../types/define";
 
 
-function ListCompetition({}: Props) {
+function ListCompetitionFake({}: Props) {
   const dispatch = useDispatchRoot();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { competitions } = useSelectorRoot(
-    (state: RootState) => state.football
-  );
+  const competitions = Utils.getCompetitionDataFake()
 
   const nextPathName =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
@@ -58,4 +57,4 @@ function ListCompetition({}: Props) {
   );
 }
 
-export default React.memo(ListCompetition);
+export default React.memo(ListCompetitionFake);

@@ -11,7 +11,7 @@ function App(props: Props) {
   const { message } = useSelectorRoot((state: RootState) => state.app);
   const dispatch = useDispatchRoot();
   React.useEffect(() => {
-    const notify = () => toast.warning(message);
+    const notify = () => toast.warning(message, { autoClose: 30000 });
     if (message.length > 0) {
       notify();
       dispatch(setMessage(""));

@@ -25,7 +25,7 @@ function Bracket(): JSX.Element {
   }, []);
 
   const RenderTable = (location: "left" | "right") => {
-    return standingsTotal?.standings?.map((e: Standing, i) => {
+    return standingsTotal?.standings?.map((e: Standing, i:number) => {
       if (location === "left" ? i < 4 : i >= 4) {
         return (
           <CTagGroupTeams key={i} title={e.group}>

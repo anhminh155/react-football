@@ -1,10 +1,6 @@
 body {
   background-color: #dce3ea;
 }
-
-.bg-wc {
-  background-image: url("./assets/images/background-wc.jpeg");
-}
 .text {
   color: "#414141";
 }
@@ -21,6 +17,10 @@ body {
 }
 .bg-opacity-50{
   height: 100vh;
+}
+
+.box-tooltip .w-fit{
+  width: auto;
 }
 
 

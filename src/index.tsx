@@ -12,6 +12,7 @@ import CHeader from "./components/CHeader";
 import Bracket from "./pages/home/Bracket";
 import Home from "./pages/home";
 import Rankings from "./pages/home/Rankings";
+import Matches from "./pages/home/Matches";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home />,
+      },
+      {
+        path: "/matches",
+        element: <Matches />,
       },
       {
         path: "/rankings",

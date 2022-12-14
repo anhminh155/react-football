@@ -28,6 +28,11 @@ export const API_FOOTBALL = {
   footballBestScorersCompetitions: (competition: string) =>
     `/v2/competitions/${competition}/scorers`,
 
+  footballHead2Head: (idMatch: number) =>
+    `/v2/matches/${idMatch}/head2head?limit=50`,
+
+  // footballHead2Head: (idMatch: number) => `/v2/matches?competitions=PL&dateFrom=2022-10-01&dateTo=2022-10-08`,
+
   worldCupTeamMatches: (idTeam: number) =>
     `/v2/teams/${idTeam}/matches?competitions=WC`,
 };

@@ -42,7 +42,7 @@ function Rankings({}: Props) {
   }, [showModal]);
 
   return (
-    <div className="mx-6">
+    <div className="mx-6 select-none">
       <div className="desktop:flex gap-x-4 mobile:inline">
         <div className="min-w-fit">
           <div className=" bg-[#01b243] text-white text-lg p-2 mt-3 border rounded-t-md w-full">
@@ -53,22 +53,19 @@ function Rankings({}: Props) {
           </CLoading>
         </div>
         <div className="w-full">
-          <CLoading loading={loadingFootball}>
-            <TableStandings
-              onSelectTable={(e: any) => {
-                console.log(e);
-                setSelectTeam(e.team);
-                setShowModal(true);
-                const param: ITeamMatches = {
-                  idTeam: e.team.id,
-                  competition: nextPathName,
-                };
-                dispatch(fetchTeamMatchesCompetitionsFootball(param));
-              }}
-            />
-          </CLoading>
+          <TableStandings
+            onSelectTable={(e: any) => {
+              setSelectTeam(e.team);
+              setShowModal(true);
+              const param: ITeamMatches = {
+                idTeam: e.team.id,
+                competition: nextPathName,
+              };
+              dispatch(fetchTeamMatchesCompetitionsFootball(param));
+            }}
+          />
           <ModalTeamMatches
-            title={`${selectTeam?.name} national football team`}
+            title={selectTeam?.name}
             data={teamMatches}
             isShow={showModal}
             onChangeModal={setShowModal}

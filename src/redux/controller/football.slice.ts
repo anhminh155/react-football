@@ -11,6 +11,10 @@ interface FootballState {
   competitions: any[];
   competitionsStandings: IICompetitionStandings | undefined;
   teamMatches: unknown;
+  bestScorersCompetitions: {
+    scorers: any[];
+  };
+  head2Head: unknown;
 }
 
 const initAppState: FootballState = {
@@ -24,6 +28,10 @@ const initAppState: FootballState = {
   ],
   competitionsStandings: undefined,
   teamMatches: undefined,
+  bestScorersCompetitions: {
+    scorers: [],
+  },
+  head2Head: undefined,
 };
 
 const footballSlice = createSlice({
@@ -39,38 +47,61 @@ const footballSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase(fetchBestScorersCompetitionsFootball.pending, (state) => {
+        state.loadingFootball = true;
+      })
       .addCase(
-        (fetchCompetitionTierFootball.pending,
-        fetchCompetitionStandingsFootball.pending),
-        (state, action) => {
-          state.loadingFootball = true;
-        }
-      )
-      .addCase(
-        (fetchCompetitionTierFootball.rejected,
-        fetchCompetitionStandingsFootball.rejected),
-        (state) => {
+        fetchBestScorersCompetitionsFootball.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          action.payload.message ??
+            (state.bestScorersCompetitions = action.payload);
           state.loadingFootball = false;
         }
-      )
+      );
+    builder
+      .addCase(fetchCompetitionTierFootball.pending, (state) => {
+        state.loadingModalFootball = true;
+      })
       .addCase(fetchCompetitionTierFootball.fulfilled, (state, action: any) => {
-        state.competitions = action.payload.competitions;
+        action.payload.message ??
+          (state.competitions = action.payload.competitions);
         state.loadingFootball = false;
+      });
+    builder
+      .addCase(fetchCompetitionStandingsFootball.pending, (state) => {
+        state.loadingFootball = true;
       })
       .addCase(
         fetchCompetitionStandingsFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
-          state.competitionsStandings = action.payload;
           console.log(action.payload);
-
+          action.payload.message ??
+            (state.competitionsStandings = action.payload);
           state.loadingFootball = false;
         }
-      )
+      );
+    builder
+      .addCase(fetchTeamMatchesCompetitionsFootball.pending, (state) => {
+        state.loadingModalFootball = true;
+      })
       .addCase(
         fetchTeamMatchesCompetitionsFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
-          state.teamMatches = action.payload.matches;
-          console.log(action.payload);
+          action.payload.message ??
+            (state.teamMatches = action.payload.matches);
+          state.loadingModalFootball = false;
+        }
+      );
+    builder
+      .addCase(fetchHead2HeadFootball.pending, (state) => {
+        state.loadingModalFootball = true;
+      })
+      .addCase(
+        fetchHead2HeadFootball.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          console.log(action);
+          action.payload.message ??
+            (state.head2Head = action.payload.matches);
           state.loadingModalFootball = false;
         }
       );
@@ -78,7 +109,7 @@ const footballSlice = createSlice({
 });
 
 export const fetchCompetitionTierFootball = createAsyncThunk(
-  "football/competition_tier",
+  "football/fetchCompetitionTier",
   async (
     tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | "TIER_FOUR",
     { dispatch }
@@ -100,7 +131,7 @@ export const fetchCompetitionTierFootball = createAsyncThunk(
 );
 
 export const fetchCompetitionStandingsFootball = createAsyncThunk(
-  "football/competition_standings",
+  "football/fetchCompetitionStandings",
   async (standing: string, { dispatch }) => {
     try {
       const res: any = await Http.get(
@@ -123,17 +154,48 @@ export type ITeamMatches = {
   competition: string;
 };
 export const fetchTeamMatchesCompetitionsFootball = createAsyncThunk(
-  "football/teamMatches",
+  "football/fetchTeamMatchesCompetitions",
   async ({ idTeam, competition }: ITeamMatches, { dispatch }) => {
     try {
       const res: any = await Http.get(
         API_FOOTBALL.footballTeamMatchesCompetitions(idTeam, competition)
       );
-      // const res_team: any = await Http.get(
-      //   API_FOOTBALL.footballTeamCompetitions(competition)
-      // );
-      // console.log(res_team.data);
+      if (res.data) {
+        const data = res.data as unknown;
+        return data;
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingModalFootball(false));
+      return error;
+    }
+  }
+);
 
+export const fetchBestScorersCompetitionsFootball = createAsyncThunk(
+  "football/fetchBestScorersCompetitions",
+  async (standing: string, { dispatch }) => {
+    try {
+      const res: any = await Http.get(
+        API_FOOTBALL.footballBestScorersCompetitions(standing)
+      );
+      if (res.data) {
+        const data = res.data as unknown;
+        return data;
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingFootball(false));
+      return error;
+    }
+  }
+);
+
+export const fetchHead2HeadFootball = createAsyncThunk(
+  "football/fetchHead2Head",
+  async (idMatch: number, { dispatch }) => {
+    try {
+      const res: any = await Http.get(API_FOOTBALL.footballHead2Head(idMatch));
       if (res.data) {
         const data = res.data as unknown;
         return data;

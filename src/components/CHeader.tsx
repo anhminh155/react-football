@@ -10,7 +10,7 @@ function CHeader({}: Props) {
   const navigate = useNavigate();
   // const location = useLocation();
   const objGmt = [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
-  const gmt = 7;
+  const gmt = 0;
 
   // console.log(location.pathname.split("/"));
 
@@ -50,6 +50,9 @@ function CHeader({}: Props) {
       <div className="shadow-md h-11 flex items-center px-6 text-xl divide-x bg-white">
         <div className="px-2 h-full text-center flex items-center border border-l-1 border-r-transparent hover:text-[#3fa338]">
           <Link to="/home">Home</Link>
+        </div>{" "}
+        <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
+          <Link to="/matches">Matches</Link>
         </div>
         <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
           <Link to="/rankings/WC">Rankings</Link>
