@@ -17,8 +17,6 @@ function ListCompetition({}: Props) {
 
   const nextPathName =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
-
-    console.log(nextPathName);
     
   return (
     <div

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { API_FOOTBALL } from "../../api/constant";
 import Http from "../../api/http.api";
 import Utils from "../../common/utils";
-import { IICompetitionStandings } from "../../types/football-type";
+import { IFiltersAPI, IICompetitionStandings } from "../../types/football-type";
 import { setMessage } from "./app.slice";
 
 interface FootballState {
@@ -15,6 +15,7 @@ interface FootballState {
     scorers: any[];
   };
   head2Head: unknown;
+  matches: any[];
 }
 
 const initAppState: FootballState = {
@@ -32,6 +33,7 @@ const initAppState: FootballState = {
     scorers: [],
   },
   head2Head: undefined,
+  matches: []
 };
 
 const footballSlice = createSlice({
@@ -103,6 +105,19 @@ const footballSlice = createSlice({
           action.payload.message ??
             (state.head2Head = action.payload.matches);
           state.loadingModalFootball = false;
+        }
+      );
+    builder
+      .addCase(fetchMatchesFootball.pending, (state) => {
+        state.loadingFootball = true;
+      })
+      .addCase(
+        fetchMatchesFootball.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          console.log(action);
+          action.payload.message ??
+            (state.matches = action.payload.matches);
+          state.loadingFootball = false;
         }
       );
   },
@@ -196,6 +211,26 @@ export const fetchHead2HeadFootball = createAsyncThunk(
   async (idMatch: number, { dispatch }) => {
     try {
       const res: any = await Http.get(API_FOOTBALL.footballHead2Head(idMatch));
+      if (res.data) {
+        const data = res.data as unknown;
+        return data;
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingModalFootball(false));
+      return error;
+    }
+  }
+);
+
+
+
+//Matches
+export const fetchMatchesFootball = createAsyncThunk(
+  "football/fetchMatches",
+  async (params: IFiltersAPI, { dispatch }) => {    
+    try {
+      const res: any = await Http.get(API_FOOTBALL.footballMatches(params));
       if (res.data) {
         const data = res.data as unknown;
         return data;

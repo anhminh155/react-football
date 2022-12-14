@@ -1,24 +1,27 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Utils from "../../common/utils";
-import { fetchCompetitionStandingsFootball } from "../../redux/controller/football.slice";
-import { useDispatchRoot, useSelectorRoot } from "../../redux/hooks";
-import { RootState } from "../../redux/store";
+import {
+  fetchCompetitionStandingsFootball,
+  fetchMatchesFootball,
+} from "../../redux/controller/football.slice";
+import { useDispatchRoot } from "../../redux/hooks";
 import { Props } from "../../types/define";
-
+import { IFiltersAPI } from "../../types/football-type";
 
 function ListCompetitionFake({}: Props) {
   const dispatch = useDispatchRoot();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const competitions = Utils.getCompetitionDataFake()
+  const competitions = Utils.getCompetitionDataFake();
+  const location = useLocation();
+  const { competitionCode } = useParams<{
+    competitionCode?: string;
+  }>();
 
   const nextPathName =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
 
-    console.log(nextPathName);
-    
   return (
     <div
       className={`${
@@ -31,8 +34,15 @@ function ListCompetitionFake({}: Props) {
             <li
               key={index}
               onClick={() => {
+                const params: IFiltersAPI = {
+                  competitions: nextPathName!,
+                  status: "SCHEDULED",
+                };
                 navigate(`${item.code}`);
-                dispatch(fetchCompetitionStandingsFootball(item.code));
+                console.log(item);
+                console.log(nextPathName);
+
+                dispatch(fetchMatchesFootball(params));
               }}
               className={`${
                 nextPathName === item.code

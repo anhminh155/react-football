@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import CLoading from "../../components/CLoading";
 import { useScrollBlock } from "../../hooks/useScrollBlock";
 import {
@@ -23,13 +23,13 @@ function Rankings({}: Props) {
   );
   const [selectTeam, setSelectTeam] = useState<any | undefined>(undefined);
   const [blockScroll, allowScroll] = useScrollBlock();
-  const location = useLocation();
 
-  const nextPathName =
-    location.pathname.split("/")[location.pathname.split("/").length - 1] || "";
+  const { competitionCode } = useParams<{
+    competitionCode?: string;
+  }>();
 
   React.useEffect(() => {
-    dispatch(fetchCompetitionStandingsFootball(nextPathName));
+    dispatch(fetchCompetitionStandingsFootball(competitionCode!));
     dispatch(fetchCompetitionTierFootball("TIER_ONE"));
   }, []);
 
@@ -59,7 +59,7 @@ function Rankings({}: Props) {
               setShowModal(true);
               const param: ITeamMatches = {
                 idTeam: e.team.id,
-                competition: nextPathName,
+                competition: competitionCode!,
               };
               dispatch(fetchTeamMatchesCompetitionsFootball(param));
             }}

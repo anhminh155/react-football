@@ -40,13 +40,19 @@ const router = createBrowserRouter([
       {
         path: "/matches",
         element: <Matches />,
+        children: [
+          {
+            path: "/matches/:competitionCode",
+            element: <Matches />,
+          },
+        ],
       },
       {
         path: "/rankings",
         element: <Rankings />,
         children: [
           {
-            path: "/rankings/:tournaments",
+            path: "/rankings/:competitionCode",
             element: <Rankings />,
           },
         ],
