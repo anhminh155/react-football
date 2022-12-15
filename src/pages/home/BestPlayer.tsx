@@ -28,6 +28,7 @@ function BestPlayer({ competition }: IBestPlayer) {
           <Table.HeadCell>Birth day</Table.HeadCell>
           <Table.HeadCell>Age</Table.HeadCell>
           <Table.HeadCell>Team</Table.HeadCell>
+          <Table.HeadCell>Position</Table.HeadCell>
           <Table.HeadCell>Goals</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
@@ -35,7 +36,9 @@ function BestPlayer({ competition }: IBestPlayer) {
             return (
               <Table.Row
                 key={i}
-                onClick={() => {}}
+                onClick={() => {
+                  console.log(scorer);
+                }}
                 className="font-bold bg-white dark:border-gray-700 dark:bg-gray-800 w-40 hover:bg-[#65bc85] hover:font-bold hover:cursor-pointer hover:text-white"
               >
                 <Table.Cell className="">{scorer.player.name}</Table.Cell>
@@ -46,6 +49,7 @@ function BestPlayer({ competition }: IBestPlayer) {
                   {Utils.getAge(scorer.player.dateOfBirth)}
                 </Table.Cell>
                 <Table.Cell className="">{scorer.team.name}</Table.Cell>
+                <Table.Cell className="">{scorer.player.position}</Table.Cell>
                 <Table.Cell className="">{scorer.numberOfGoals}</Table.Cell>
               </Table.Row>
             );
@@ -55,7 +59,11 @@ function BestPlayer({ competition }: IBestPlayer) {
     );
   };
 
-  return <CLoading loading={loadingFootball}><div className="min-h-[300px]">{RenderTable()}</div></CLoading>;
+  return (
+    <CLoading loading={loadingFootball}>
+      <div className="min-h-[300px]">{RenderTable()}</div>
+    </CLoading>
+  );
 }
 
 export default React.memo(BestPlayer);

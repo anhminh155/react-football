@@ -11,7 +11,7 @@ function ListCompetition({}: Props) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { competitions } = useSelectorRoot(
+  const { rootCompetitions } = useSelectorRoot(
     (state: RootState) => state.football
   );
 
@@ -21,11 +21,11 @@ function ListCompetition({}: Props) {
   return (
     <div
       className={`${
-        competitions ? "" : "h-52"
+        rootCompetitions.competitions ? "" : "h-52"
       } flex flex-col gap-y-2 bg-white divide-y`}
     >
       <ul className=" odd:bg-white even:bg-slate-50">
-        {competitions?.map((item: any, index: number) => {
+        {rootCompetitions.competitions?.map((item: any, index: number) => {
           return (
             <li
               key={index}
@@ -42,7 +42,7 @@ function ListCompetition({}: Props) {
             >
               <div className="flex items-center ">
                 <img
-                  className="h-4 w-8 pr-1 border-r-2 border-gray-500"
+                  className="h-6 w-8 pr-1 border-r-2 border-gray-500"
                   src={item.emblemUrl}
                   alt=""
                 />

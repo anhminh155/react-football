@@ -42,7 +42,7 @@ const router = createBrowserRouter([
         element: <Matches />,
         children: [
           {
-            path: "/matches/:competitionCode",
+            path: "/matches/:codeMatches",
             element: <Matches />,
           },
         ],

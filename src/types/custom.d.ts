@@ -1,8 +1,4 @@
-// declare module '@reduxjs/toolkit' {
-//     type AsyncThunkConfig = {
-//       state?: AppState;
-//       dispatch?: AppDispatch;
-//       extra?: null;
-//       rejectValue?: HttpError;
-//     }
-//   }
+declare module "*.svg" {
+    const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
+    export default content;
+  }

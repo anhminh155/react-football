@@ -18,7 +18,7 @@ import TableStandings from "./TableStandings";
 function Rankings({}: Props) {
   const dispatch = useDispatchRoot();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { teamMatches, loadingFootball } = useSelectorRoot(
+  const { teamMatches, loadingFootball, head2Head } = useSelectorRoot(
     (state: RootState) => state.football
   );
   const [selectTeam, setSelectTeam] = useState<any | undefined>(undefined);
@@ -29,6 +29,8 @@ function Rankings({}: Props) {
   }>();
 
   React.useEffect(() => {
+    console.log(competitionCode);
+    
     dispatch(fetchCompetitionStandingsFootball(competitionCode!));
     dispatch(fetchCompetitionTierFootball("TIER_ONE"));
   }, []);

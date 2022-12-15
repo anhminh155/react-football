@@ -28,7 +28,6 @@ export const API_FOOTBALL = {
   footballMatches: (param: IFiltersAPI) => {
     let result:string =''
     Object.keys(param).forEach((key,i:number) => {
-      console.log(key);
       if (key !== "competitions") {
         result += `${key}=${param[key as keyof IFiltersAPI]}&`
       }

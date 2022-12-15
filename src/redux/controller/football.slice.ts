@@ -1,39 +1,38 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { API_FOOTBALL } from "../../api/constant";
 import Http from "../../api/http.api";
+import { DataFake } from "../../common/dataFake";
 import Utils from "../../common/utils";
+import { IRootCompetition } from "../../types/football-competition";
+import { IRootMatches } from "../../types/football-matches";
 import { IFiltersAPI, IICompetitionStandings } from "../../types/football-type";
+import { IHead2Head } from "../../types/head2Head.football";
 import { setMessage } from "./app.slice";
 
 interface FootballState {
   loadingFootball: boolean;
   loadingModalFootball: boolean;
-  competitions: any[];
+  rootCompetitions: IRootCompetition;
   competitionsStandings: IICompetitionStandings | undefined;
   teamMatches: unknown;
   bestScorersCompetitions: {
     scorers: any[];
   };
-  head2Head: unknown;
-  matches: any[];
+  head2Head: IHead2Head;
+  rootMatches: IRootMatches;
 }
 
 const initAppState: FootballState = {
   loadingFootball: false,
   loadingModalFootball: false,
-  competitions: [
-    {
-      name: "",
-      code: "",
-    },
-  ],
+  rootCompetitions: DataFake.CompetitionsFree(),
   competitionsStandings: undefined,
   teamMatches: undefined,
   bestScorersCompetitions: {
     scorers: [],
   },
-  head2Head: undefined,
-  matches: []
+  head2Head: DataFake.DataHead2Head(),
+  rootMatches:DataFake.Matches()
 };
 
 const footballSlice = createSlice({
@@ -66,7 +65,7 @@ const footballSlice = createSlice({
       })
       .addCase(fetchCompetitionTierFootball.fulfilled, (state, action: any) => {
         action.payload.message ??
-          (state.competitions = action.payload.competitions);
+          (state.rootCompetitions = action.payload);
         state.loadingFootball = false;
       });
     builder
@@ -103,7 +102,7 @@ const footballSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           console.log(action);
           action.payload.message ??
-            (state.head2Head = action.payload.matches);
+            (state.head2Head = action.payload);
           state.loadingModalFootball = false;
         }
       );
@@ -116,7 +115,7 @@ const footballSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           console.log(action);
           action.payload.message ??
-            (state.matches = action.payload.matches);
+            (state.rootMatches = action.payload);
           state.loadingFootball = false;
         }
       );
