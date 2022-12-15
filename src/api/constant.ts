@@ -33,6 +33,7 @@ export const API_FOOTBALL = {
       }
     });
     return `/v2/competitions/${param.competitions}/matches?${result}`;
+    // return `/v2/matches?dateFrom=2022-12-15&dateTo=2022-12-25&status=FINISHED`;
   },
 
   footballHead2Head: (idMatch: number) => `/v2/matches/${idMatch}/head2head`,

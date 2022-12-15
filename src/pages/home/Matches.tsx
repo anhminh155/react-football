@@ -1,6 +1,7 @@
-import { Pagination, Table } from "flowbite-react";
+import { Pagination, Table, ToggleSwitch } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Utils from "../../common/utils";
 import CLoading from "../../components/CLoading";
 import { fetchMatchesFootball } from "../../redux/controller/football.slice";
 import { useDispatchRoot, useSelectorRoot } from "../../redux/hooks";
@@ -27,40 +28,103 @@ function Matches({}: Props) {
       competitions: codeMatches!,
       status: "SCHEDULED",
     };
-    if (checked) {
-      delete params.status;
-      dispatch(fetchMatchesFootball(params));
-    } else {
-      dispatch(fetchMatchesFootball(params));
-    }
+    dispatch(fetchMatchesFootball(params));
   }, []);
-
-  console.log(data);
-  console.log(rootMatches.matches);
-  
 
   useEffect(() => {
     rootMatches.matches.length >= 10
-      ? setData(handelPagination(rootMatches.matches, 10, 1))
+      ? setData(Utils.handelPagination(rootMatches.matches, 10, 1))
       : setData(rootMatches.matches);
     setNumberPagination(1);
   }, [rootMatches.matches]);
 
-  const handelPagination = (
-    array: any,
-    page_size: number,
-    page_number: number
-  ) => {
-    return array.slice(
-      page_number * page_size,
-      page_number * page_size + page_size
-    );
-  };
+  // let upcoming_matches:any = rootMatches?.matches;
+  // let highest_odds = {
+  //   homeWin: 0.0,
+  //   draw: 0.0,
+  //   awayWin: 0.0,
+  // };
+  // let matches:any = {
+  //   homeWin: null,
+  //   draw: null,
+  //   awayWin: null,
+  // };
+
+  // for (
+  //   var m, _pj_c = 0, _pj_a = upcoming_matches, _pj_b = _pj_a.length;
+  //   _pj_c < _pj_b;
+  //   _pj_c += 1
+  // ) {
+  //   m = _pj_a[_pj_c];
+
+  //   try {
+  //     if (
+  //       m["odds"]["homeWin"] !== null &&
+  //       m["odds"]["homeWin"] > highest_odds["homeWin"]
+  //     ) {
+  //       highest_odds["homeWin"] = m["odds"]["homeWin"];
+  //       matches["homeWin"] = m;
+  //     }
+
+  //     if (
+  //       m["odds"]["draw"] !== null &&
+  //       m["odds"]["draw"] > highest_odds["draw"]
+  //     ) {
+  //       highest_odds["draw"] = m["odds"]["draw"];
+  //       matches["draw"] = m;
+  //     }
+
+  //     if (
+  //       m["odds"]["awayWin"] !== null &&
+  //       m["odds"]["awayWin"] > highest_odds["awayWin"]
+  //     ) {
+  //       highest_odds["awayWin"] = m["odds"]["awayWin"];
+  //       matches["awayWin"] = m;
+  //     }
+  //   } catch (e) {
+  //     if (e) {
+  //       console.log("You need to enable Odds in User-Panel.");
+  //     } else {
+  //       throw e;
+  //     }
+  //   }
+  // }
+
+  // console.log(
+  //   "Highest odds for upcoming games today for home win, draw and away win are as follows:\n"
+  // );
+  // console.log(
+  //   "homeWin: " +
+  //     matches["homeWin"]["homeTeam"]["name"] +
+  //     " against " +
+  //     matches["homeWin"]["awayTeam"]["name"] +
+  //     " (" +
+  //     highest_odds["homeWin"].toString() +
+  //     ")"
+  // );
+  // console.log(
+  //   "draw: " +
+  //     matches["draw"]["homeTeam"]["name"] +
+  //     " against " +
+  //     matches["draw"]["awayTeam"]["name"] +
+  //     " (" +
+  //     highest_odds["draw"].toString() +
+  //     ")"
+  // );
+  // console.log(
+  //   "awayWin: " +
+  //     matches["awayWin"]["homeTeam"]["name"] +
+  //     " against " +
+  //     matches["awayWin"]["awayTeam"]["name"] +
+  //     " (" +
+  //     highest_odds["awayWin"].toString() +
+  //     ")"
+  // );
 
   const RenderTable = () => {
     return (
       <CLoading loading={loadingFootball}>
-        <div className="flex justify-between items-center mb-3">
+        <div className="desktop:flex justify-between items-center mb-3">
           <label className="inline-flex relative cursor-pointer">
             <input
               type="checkbox"
@@ -89,7 +153,7 @@ function Matches({}: Props) {
                after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"
             />
             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-              {`All(Matches/Live)`}
+              {`All(Finished/upcoming)`}
             </span>
           </label>
 
@@ -98,7 +162,7 @@ function Matches({}: Props) {
             currentPage={numberPagination}
             onPageChange={(e) => {
               if (rootMatches.count >= 10) {
-                setData(handelPagination(rootMatches.matches, 10, e));
+                setData(Utils.handelPagination(rootMatches.matches, 10, e));
                 setNumberPagination(e);
               }
             }}
@@ -114,9 +178,9 @@ function Matches({}: Props) {
             <Table.HeadCell>Day</Table.HeadCell>
             <Table.HeadCell>Hours</Table.HeadCell>
             <Table.HeadCell className="text-right">Owner</Table.HeadCell>
-            <Table.HeadCell className="text-center">Score</Table.HeadCell>
+            <Table.HeadCell className="text-center w-24">Score</Table.HeadCell>
             <Table.HeadCell>Guest</Table.HeadCell>
-            <Table.HeadCell>Data</Table.HeadCell>
+            <Table.HeadCell className="text-center">Odds</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {data?.map((match: Match, i: number) => {
@@ -129,7 +193,6 @@ function Matches({}: Props) {
                   minute: "2-digit",
                 }
               );
-              // const hoursAndMinutes = time.getHours() + ":" + time.getMinutes();
 
               return (
                 <Table.Row
@@ -145,15 +208,15 @@ function Matches({}: Props) {
                   <Table.Cell className="text-right">
                     {match.homeTeam.name}
                   </Table.Cell>
-                  <Table.Cell className="text-center">
-                    {match.score.fullTime.homeTeam
+                  <Table.Cell className="text-center w-24">
+                    {match.score.fullTime.homeTeam !== null
                       ? `${match.score.fullTime.homeTeam} : ${match.score.fullTime.awayTeam}`
                       : "VS"}
                   </Table.Cell>
 
                   <Table.Cell>{match.awayTeam.name}</Table.Cell>
 
-                  <Table.Cell>---</Table.Cell>
+                  <Table.Cell className="text-center">{match.odds.homeWin || 0}/{match.odds.draw || 0}/{match.odds.awayWin || 0}</Table.Cell>
                 </Table.Row>
               );
             })}
@@ -170,7 +233,20 @@ function Matches({}: Props) {
             HOT Tournaments
           </div>
           <CLoading loading={loadingFootball}>
-            <ListCompetitionFake />
+            <ListCompetitionFake
+              handleOnChange={(code: string) => {
+                const params: IFiltersAPI = {
+                  competitions: code,
+                  status: "SCHEDULED",
+                };
+                if (checked) {
+                  delete params.status;
+                  dispatch(fetchMatchesFootball(params));
+                } else {
+                  dispatch(fetchMatchesFootball(params));
+                }
+              }}
+            />
           </CLoading>
         </div>
         <div className="w-full my-3">{RenderTable()}</div>

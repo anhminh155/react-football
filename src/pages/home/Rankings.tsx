@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CLoading from "../../components/CLoading";
 import { useScrollBlock } from "../../hooks/useScrollBlock";
 import {
@@ -29,8 +29,6 @@ function Rankings({}: Props) {
   }>();
 
   React.useEffect(() => {
-    console.log(competitionCode);
-    
     dispatch(fetchCompetitionStandingsFootball(competitionCode!));
     dispatch(fetchCompetitionTierFootball("TIER_ONE"));
   }, []);

@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DataFake } from "../../common/dataFake";
-import { fetchMatchesFootball } from "../../redux/controller/football.slice";
 import { useDispatchRoot } from "../../redux/hooks";
 import { Props } from "../../types/define";
-import { IFiltersAPI } from "../../types/football-type";
 
-function ListCompetitionFake({}: Props) {
-  const dispatch = useDispatchRoot();
+interface IListCompetitionFake extends Props {
+  handleOnChange: any;
+}
+
+function ListCompetitionFake({ handleOnChange }: IListCompetitionFake) {
   const navigate = useNavigate();
 
   const competitions = DataFake.CompetitionsFree().competitions;
@@ -27,12 +28,8 @@ function ListCompetitionFake({}: Props) {
             <li
               key={index}
               onClick={() => {
-                const params: IFiltersAPI = {
-                  competitions: item.code,
-                  status: "SCHEDULED",
-                };
+                handleOnChange(item.code);
                 navigate(`${item.code}`);
-                dispatch(fetchMatchesFootball(params));
               }}
               className={`${
                 codeMatches === item.code

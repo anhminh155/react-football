@@ -44,5 +44,11 @@ class Utils {
     }
     return age;
   }
+  static handelPagination(array: any[], page_size: number, page_number: number) {
+    return array.slice(
+      page_number * page_size,
+      page_number * page_size + page_size
+    );
+  }
 }
 export default Utils;

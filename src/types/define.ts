@@ -9,5 +9,5 @@ export interface Props extends PropsAny {
   onClick?: (event: unknown) => void;
 }
 
-export type NavbarType = "home" | "rankings" | "Bracket";
+export type NavbarType = "home" | "matches" | "rankings" | "bracket";
 export type LanguageType = "en" | "vi";

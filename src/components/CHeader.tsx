@@ -1,14 +1,18 @@
 import { Dropdown } from "flowbite-react";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { setNavbar } from "../redux/controller/app.slice";
+import { useDispatchRoot, useSelectorRoot } from "../redux/hooks";
+import { RootState } from "../redux/store";
 
 type Props = {};
 
-type INav = "home" | "hxh" | "tips";
+// type INav = "home" | "hxh" | "tips";
 
 function CHeader({}: Props) {
   const navigate = useNavigate();
-  // const location = useLocation();
+  const dispatch = useDispatchRoot();
+  const { navbar } = useSelectorRoot((state: RootState) => state.app);
   const objLang = ["en", "vi"];
   const lang = "en";
 
@@ -44,16 +48,36 @@ function CHeader({}: Props) {
         </div>
       </div>
       <div className="shadow-md h-11 flex items-center px-6 text-xl divide-x bg-white">
-        <div className="px-2 h-full text-center flex items-center border border-l-1 border-r-transparent hover:text-[#3fa338]">
+        <div
+          onClick={() => dispatch(setNavbar("home"))}
+          className={`${
+            navbar === "home" ? "font-bold text-[#3fa338]" : ""
+          } px-2 h-full text-center cursor-pointer flex items-center border border-l-1 border-r-transparent hover:text-[#3fa338]`}
+        >
           <Link to="/home">Home</Link>
         </div>
-        <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
+        <div
+          onClick={() => dispatch(setNavbar("matches"))}
+          className={`${
+            navbar === "matches" ? "font-bold text-[#3fa338]" : ""
+          } px-2 h-full text-center cursor-pointer flex items-center hover:text-[#3fa338]`}
+        >
           <Link to="/matches/PL">Matches</Link>
         </div>
-        <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
+        <div
+          onClick={() => dispatch(setNavbar("rankings"))}
+          className={`${
+            navbar === "rankings" ? "font-bold text-[#3fa338]" : ""
+          } px-2 h-full text-center cursor-pointer flex items-center hover:text-[#3fa338]`}
+        >
           <Link to="/rankings/PL">Rankings</Link>
         </div>
-        <div className=" px-2 h-full text-center flex items-center hover:text-[#3fa338]">
+        <div
+          onClick={() => dispatch(setNavbar("bracket"))}
+          className={`${
+            navbar === "bracket" ? "font-bold text-[#3fa338]" : ""
+          } px-2 h-full text-center cursor-pointer flex items-center hover:text-[#3fa338]`}
+        >
           <Link to="/bracket">Bracket</Link>
         </div>
       </div>

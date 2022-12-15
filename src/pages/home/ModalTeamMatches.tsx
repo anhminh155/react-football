@@ -1,5 +1,5 @@
 import { Badge, Modal, Table } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Utils from "../../common/utils";
 import CLoading from "../../components/CLoading";
 import CTooltip from "../../components/CTooltip";
@@ -43,7 +43,7 @@ function ModalTeamMatches({
 
   return (
     <Modal
-      onBlur={() => console.log("out")}
+      // onBlur={() => console.log("out")}
       show={isShow}
       size="4xl"
       onClose={() => {
@@ -63,8 +63,8 @@ function ModalTeamMatches({
       </Modal.Header>
       <Modal.Body>
         <CLoading loading={loadingModalFootball} background="#fff">
-          {(showHead2Head ? head2Head?.matches : data?.length) == 0 ??
-          (showHead2Head ? head2Head?.matches : data == undefined) ? (
+          {(showHead2Head ? head2Head?.matches : data?.length) === 0 ??
+          (showHead2Head ? head2Head?.matches : data === undefined) ? (
             <div>Data not Found in database</div>
           ) : (
             <div className="select-none">
@@ -194,9 +194,9 @@ function ModalTeamMatches({
                 ""
               )}
               <div
-                className={`grid mobile:grid-cols-1 desktop:grid-cols-2 gap-4 auto-rows-min	overflow-auto h-[${
-                  showHead2Head ? "400px" : "600px"
-                }]`}
+                className={`grid mobile:grid-cols-1 desktop:grid-cols-2 gap-4 auto-rows-min	overflow-auto ${
+                  showHead2Head ? "h-[400px]" : "h-[600px]"
+                }`}
               >
                 {(showHead2Head ? head2Head.matches : data)?.map(
                   (e: any, i: number) => {
@@ -223,8 +223,13 @@ function ModalTeamMatches({
                             dispatch(fetchHead2HeadFootball(e.id));
                           }
                         }}
-                        className="border p-2 rounded-md h-fit hover:bg-gray-200 hover:cursor-pointer"
+                        className="relative border p-2 rounded-md h-fit hover:bg-gray-200 hover:cursor-pointer"
                       >
+                        {e.status === "POSTPONED" && (
+                          <div className="absolute top-0 right-0 bg-orange-300 opacity-30 w-full h-full font-bold text-lg flex items-center justify-center">
+                            <span className="-rotate-12	">POSTPONED</span>
+                          </div>
+                        )}
                         {showHead2Head ? (
                           <span className="pb-2 font-bold">
                             {e.competition.name}
