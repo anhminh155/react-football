@@ -27,6 +27,12 @@ const Layout = (): JSX.Element => {
   );
 };
 
+export type IPathNameChild = {
+  codeMatches?: string;
+  idMatch?: string;
+  competitionCode?: string;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -44,6 +50,12 @@ const router = createBrowserRouter([
           {
             path: "/matches/:codeMatches",
             element: <Matches />,
+            children: [
+              {
+                path: "/matches/:codeMatches/:idMatch",
+                element: <Matches />,
+              },
+            ],
           },
         ],
       },

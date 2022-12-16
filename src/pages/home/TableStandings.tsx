@@ -17,6 +17,7 @@ function TableStandings({ onSelectTable }: ITableStandings) {
   const [activeTab, setActiveTab] = useState<
     "standings" | "bracket" | "bestPlayer"
   >("standings");
+  
   const seasonYear = new Date(
     competitionsStandings?.season.startDate
   ).getFullYear();
@@ -101,14 +102,18 @@ function TableStandings({ onSelectTable }: ITableStandings) {
           >
             STANDINGS
           </li>
-          <li
-            onClick={() => setActiveTab("bracket")}
-            className={`${
-              activeTab === "bracket" ? "bg-[#05b244] text-white" : ""
-            } cursor-pointer float-left px-2 py-3 hover:bg-[#05b244] hover:text-white`}
-          >
-            BRACKET
-          </li>
+          {competitionsStandings?.standings?.length > 1 ? (
+            <li
+              onClick={() => setActiveTab("bracket")}
+              className={`${
+                activeTab === "bracket" ? "bg-[#05b244] text-white" : ""
+              } cursor-pointer float-left px-2 py-3 hover:bg-[#05b244] hover:text-white`}
+            >
+              BRACKET
+            </li>
+          ) : (
+            ""
+          )}
           <li
             onClick={() => setActiveTab("bestPlayer")}
             className={`${

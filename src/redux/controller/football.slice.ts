@@ -6,19 +6,21 @@ import Utils from "../../common/utils";
 import { IRootCompetition } from "../../types/football-competition";
 import { IRootMatches } from "../../types/football-matches";
 import { IFiltersAPI, IICompetitionStandings } from "../../types/football-type";
-import { IHead2Head } from "../../types/head2Head.football";
+import { IAreas } from "../../types/football.areas";
+import { IHead2Head } from "../../types/football.head2Head";
 import { setMessage } from "./app.slice";
 
 interface FootballState {
   loadingFootball: boolean;
   loadingModalFootball: boolean;
   rootCompetitions: IRootCompetition;
-  competitionsStandings: IICompetitionStandings | undefined;
+  competitionsStandings: IICompetitionStandings;
   teamMatches: unknown;
   bestScorersCompetitions: {
     scorers: any[];
   };
   head2Head: IHead2Head;
+  rootAreas: IAreas;
   rootMatches: IRootMatches;
 }
 
@@ -26,13 +28,14 @@ const initAppState: FootballState = {
   loadingFootball: false,
   loadingModalFootball: false,
   rootCompetitions: DataFake.CompetitionsFree(),
-  competitionsStandings: undefined,
+  competitionsStandings: DataFake.CompetitionStandings(),
   teamMatches: undefined,
   bestScorersCompetitions: {
     scorers: [],
   },
   head2Head: DataFake.DataHead2Head(),
-  rootMatches:DataFake.Matches()
+  rootMatches: DataFake.Matches(),
+  rootAreas: DataFake.Areas(),
 };
 
 const footballSlice = createSlice({
@@ -64,9 +67,21 @@ const footballSlice = createSlice({
         state.loadingModalFootball = true;
       })
       .addCase(fetchCompetitionTierFootball.fulfilled, (state, action: any) => {
-        action.payload.message ??
-          (state.rootCompetitions = action.payload);
-        state.loadingFootball = false;
+        console.log(action.payload);
+        const payload = action.payload.data;
+        if (!action.payload.message) {
+          // state.rootAreas =  action.payload[0]
+          state.rootCompetitions = {
+            ...payload,
+            competitions: {
+              ...state.rootCompetitions.competitions,
+              [`${action.payload.idArea}`] : payload.competitions
+            },
+          };
+          state.loadingFootball = false;
+        }
+        // action.payload.message ?? (state.rootCompetitions = action.payload);
+        // state.loadingFootball = false;
       });
     builder
       .addCase(fetchCompetitionStandingsFootball.pending, (state) => {
@@ -101,8 +116,7 @@ const footballSlice = createSlice({
         fetchHead2HeadFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
           console.log(action);
-          action.payload.message ??
-            (state.head2Head = action.payload);
+          action.payload.message ?? (state.head2Head = action.payload);
           state.loadingModalFootball = false;
         }
       );
@@ -114,8 +128,7 @@ const footballSlice = createSlice({
         fetchMatchesFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
           console.log(action);
-          action.payload.message ??
-            (state.rootMatches = action.payload);
+          action.payload.message ?? (state.rootMatches = action.payload);
           state.loadingFootball = false;
         }
       );
@@ -124,16 +137,17 @@ const footballSlice = createSlice({
 
 export const fetchCompetitionTierFootball = createAsyncThunk(
   "football/fetchCompetitionTier",
-  async (
-    tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | "TIER_FOUR",
-    { dispatch }
-  ) => {
+  async (idArea: number | any, { dispatch }) => {
     try {
       const res: any = await Http.get(
-        API_FOOTBALL.footballTierCompetitions(tier)
+        API_FOOTBALL.footballTierCompetitions(idArea)
       );
+      // const res = await Promise.all([
+      //   Http.get(API_FOOTBALL.footballAreas(2267)),
+      //   Http.get(API_FOOTBALL.footballTierCompetitions(tier)),
+      // ]);
       if (res.data) {
-        const data = res.data as unknown;
+        const data = { data: res.data, idArea: idArea } as unknown;
         return data;
       }
     } catch (error) {
@@ -222,12 +236,10 @@ export const fetchHead2HeadFootball = createAsyncThunk(
   }
 );
 
-
-
 //Matches
 export const fetchMatchesFootball = createAsyncThunk(
   "football/fetchMatches",
-  async (params: IFiltersAPI, { dispatch }) => {    
+  async (params: IFiltersAPI, { dispatch }) => {
     try {
       const res: any = await Http.get(API_FOOTBALL.footballMatches(params));
       if (res.data) {

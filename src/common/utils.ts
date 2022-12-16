@@ -22,7 +22,7 @@ class Utils {
     }
   }
 
-  static formatDate(date: Date): string {
+  static formatDate(date: string): string {
     return new Date(date).toDateString();
   }
 

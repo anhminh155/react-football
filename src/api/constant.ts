@@ -17,7 +17,10 @@ export const API_FOOTBALL = {
   footballTeamMatchesCompetitions: (idTeam: number, competition: string) =>
     `/v2/teams/${idTeam}/matches?competitions=${competition}`,
 
-  footballTierCompetitions: (tier: string) => `/v2/competitions?plan=${tier}`,
+  footballAreas: (idArea?: number) => `/v2/areas/${idArea}`,
+
+  footballTierCompetitions: (idArea: string) => `/v2/competitions?plan=TIER_ONE&areas=${idArea}`,
+  // 2267
 
   footballTeamCompetitions: (competition: string) =>
     `/v2/competitions/${competition}/teams`,
@@ -26,10 +29,10 @@ export const API_FOOTBALL = {
     `/v2/competitions/${competition}/scorers`,
 
   footballMatches: (param: IFiltersAPI) => {
-    let result:string =''
-    Object.keys(param).forEach((key,i:number) => {
+    let result: string = "";
+    Object.keys(param).forEach((key, i: number) => {
       if (key !== "competitions") {
-        result += `${key}=${param[key as keyof IFiltersAPI]}&`
+        result += `${key}=${param[key as keyof IFiltersAPI]}&`;
       }
     });
     return `/v2/competitions/${param.competitions}/matches?${result}`;

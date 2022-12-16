@@ -4,7 +4,6 @@ import CLoading from "../../components/CLoading";
 import { useScrollBlock } from "../../hooks/useScrollBlock";
 import {
   fetchCompetitionStandingsFootball,
-  fetchCompetitionTierFootball,
   fetchTeamMatchesCompetitionsFootball,
   ITeamMatches,
 } from "../../redux/controller/football.slice";
@@ -30,7 +29,6 @@ function Rankings({}: Props) {
 
   React.useEffect(() => {
     dispatch(fetchCompetitionStandingsFootball(competitionCode!));
-    dispatch(fetchCompetitionTierFootball("TIER_ONE"));
   }, []);
 
   React.useEffect(() => {
@@ -45,11 +43,12 @@ function Rankings({}: Props) {
     <div className="mx-6 select-none">
       <div className="desktop:flex gap-x-4 mobile:inline">
         <div className="min-w-fit">
-          <div className=" bg-[#01b243] text-white text-lg p-2 mt-3 border rounded-t-md w-full">
-            ALL TOURNAMENTS
-          </div>
           <CLoading loading={loadingFootball}>
-            <ListCompetition />
+            <ListCompetition
+              getCompetitionCode={(code: string) =>
+                dispatch(fetchCompetitionStandingsFootball(code))
+              }
+            />
           </CLoading>
         </div>
         <div className="w-full">
