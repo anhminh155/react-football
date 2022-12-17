@@ -5,6 +5,7 @@ import { DataFake } from "../../common/dataFake";
 import Utils from "../../common/utils";
 import { IRootCompetition } from "../../types/football-competition";
 import { IRootMatches } from "../../types/football-matches";
+import { IPlayerMatches } from "../../types/football-player-matches";
 import { IFiltersAPI, IICompetitionStandings } from "../../types/football-type";
 import { IAreas } from "../../types/football.areas";
 import { IHead2Head } from "../../types/football.head2Head";
@@ -22,6 +23,7 @@ interface FootballState {
   head2Head: IHead2Head;
   rootAreas: IAreas;
   rootMatches: IRootMatches;
+  rootInfoPersonMatches: IPlayerMatches
 }
 
 const initAppState: FootballState = {
@@ -36,6 +38,7 @@ const initAppState: FootballState = {
   head2Head: DataFake.DataHead2Head(),
   rootMatches: DataFake.Matches(),
   rootAreas: DataFake.Areas(),
+  rootInfoPersonMatches: DataFake.PlayerMatches()
 };
 
 const footballSlice = createSlice({
@@ -63,11 +66,24 @@ const footballSlice = createSlice({
         }
       );
     builder
+      .addCase(fetchInfoPersonsMatchesFootball.pending, (state) => {
+        state.loadingFootball = true;
+      })
+      .addCase(
+        fetchInfoPersonsMatchesFootball.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          console.log(action.payload);
+          
+          action.payload.message ??
+            (state.rootInfoPersonMatches = action.payload);
+          state.loadingFootball = false;
+        }
+      );
+    builder
       .addCase(fetchCompetitionTierFootball.pending, (state) => {
         state.loadingModalFootball = true;
       })
       .addCase(fetchCompetitionTierFootball.fulfilled, (state, action: any) => {
-        console.log(action.payload);
         const payload = action.payload.data;
         if (!action.payload.message) {
           // state.rootAreas =  action.payload[0]
@@ -90,7 +106,6 @@ const footballSlice = createSlice({
       .addCase(
         fetchCompetitionStandingsFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
-          console.log(action.payload);
           action.payload.message ??
             (state.competitionsStandings = action.payload);
           state.loadingFootball = false;
@@ -115,7 +130,6 @@ const footballSlice = createSlice({
       .addCase(
         fetchHead2HeadFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
-          console.log(action);
           action.payload.message ?? (state.head2Head = action.payload);
           state.loadingModalFootball = false;
         }
@@ -127,7 +141,6 @@ const footballSlice = createSlice({
       .addCase(
         fetchMatchesFootball.fulfilled,
         (state, action: PayloadAction<any>) => {
-          console.log(action);
           action.payload.message ?? (state.rootMatches = action.payload);
           state.loadingFootball = false;
         }
@@ -201,6 +214,10 @@ export const fetchTeamMatchesCompetitionsFootball = createAsyncThunk(
 );
 
 
+
+/**
+ * Call best player
+ */
 export type IBestScorers= {
   competition: string;
   limit: number;
@@ -223,6 +240,25 @@ export const fetchBestScorersCompetitionsFootball = createAsyncThunk(
     }
   }
 );
+export const fetchInfoPersonsMatchesFootball = createAsyncThunk(
+  "football/fetchInfoPersons",
+  async (idPerson: number, { dispatch }) => {
+    try {
+      const res: any = await Http.get(
+        API_FOOTBALL.footballInfoPersonsMatches(idPerson)
+      );
+      if (res.data) {
+        const data = res.data as unknown;
+        return data;
+      }
+    } catch (error) {
+      dispatch(setMessage(Utils.getMassage()));
+      dispatch(setLoadingFootball(false));
+      return error;
+    }
+  }
+);
+// -----------------------------------
 
 export const fetchHead2HeadFootball = createAsyncThunk(
   "football/fetchHead2Head",

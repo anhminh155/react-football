@@ -1,5 +1,6 @@
 import { IRootCompetition } from "../types/football-competition";
 import { IRootMatches } from "../types/football-matches";
+import { IPlayerMatches } from "../types/football-player-matches";
 import { IICompetitionStandings } from "../types/football-type";
 import { IAreas } from "../types/football.areas";
 import { IHead2Head } from "../types/football.head2Head";
@@ -532,6 +533,90 @@ export class DataFake {
           ensignUrl: null,
           parentAreaId: 2014,
           parentArea: "Asia",
+        },
+      ],
+    };
+  }
+
+  static PlayerMatches():IPlayerMatches {
+    return {
+      count: 10,
+      filters: {
+        permission: "TIER_ONE",
+        limit: 10,
+      },
+      player: {
+        id: 38101,
+        name: "Erling Haaland",
+        firstName: "Erling Braut",
+        lastName: null,
+        dateOfBirth: "2000-07-21",
+        countryOfBirth: "England",
+        nationality: "Norway",
+        position: "Offence",
+        shirtNumber: null,
+        lastUpdated: "2022-07-26T15:39:30Z",
+      },
+      matches: [
+        {
+          id: 416230,
+          competition: {
+            id: 2021,
+            name: "Premier League",
+          },
+          season: {
+            id: 1490,
+            startDate: "2022-08-05",
+            endDate: "2023-05-28",
+            currentMatchday: 17,
+          },
+          utcDate: "2022-11-12T12:30:00Z",
+          status: "FINISHED",
+          matchday: 16,
+          stage: "REGULAR_SEASON",
+          group: null,
+          lastUpdated: "2022-12-17T08:20:35Z",
+          odds: {
+            homeWin: 1.14,
+            draw: 8.28,
+            awayWin: 17.02,
+          },
+          score: {
+            winner: "AWAY_TEAM",
+            duration: "REGULAR",
+            fullTime: {
+              homeTeam: 1,
+              awayTeam: 2,
+            },
+            halfTime: {
+              homeTeam: 1,
+              awayTeam: 1,
+            },
+            extraTime: {
+              homeTeam: null,
+              awayTeam: null,
+            },
+            penalties: {
+              homeTeam: null,
+              awayTeam: null,
+            },
+          },
+          homeTeam: {
+            id: 65,
+            name: "Manchester City FC",
+          },
+          awayTeam: {
+            id: 402,
+            name: "Brentford FC",
+          },
+          referees: [
+            {
+              id: 11309,
+              name: "Peter Bankes",
+              role: "REFEREE",
+              nationality: "England",
+            },
+          ],
         },
       ],
     };

@@ -26,8 +26,14 @@ export const API_FOOTBALL = {
   footballTeamCompetitions: (competition: string) =>
     `/v2/competitions/${competition}/teams`,
 
+
+  //Best Player
   footballBestScorersCompetitions: (competition: string, limit:number) =>
     `/v2/competitions/${competition}/scorers?limit=${limit}`,
+
+  footballInfoPersonsMatches: (idPerson: number) =>
+    `/v2/players/${idPerson}/matches?limit=10&competitions=PL`,
+    // `/v2/players/${idPerson}/matches?limit=5`,
 
   footballMatches: (param: IFiltersAPI) => {
     let result: string = "";
