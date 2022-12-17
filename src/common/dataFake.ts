@@ -1,5 +1,5 @@
 import { IRootCompetition } from "../types/football-competition";
-import { IMatch, IRootMatches } from "../types/football-matches";
+import { IRootMatches } from "../types/football-matches";
 import { IICompetitionStandings } from "../types/football-type";
 import { IAreas } from "../types/football.areas";
 import { IHead2Head } from "../types/football.head2Head";

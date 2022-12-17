@@ -19,14 +19,15 @@ export const API_FOOTBALL = {
 
   footballAreas: (idArea?: number) => `/v2/areas/${idArea}`,
 
-  footballTierCompetitions: (idArea: string) => `/v2/competitions?plan=TIER_ONE&areas=${idArea}`,
+  footballTierCompetitions: (idArea: string) =>
+    `/v2/competitions?plan=TIER_ONE&areas=${idArea}`,
   // 2267
 
   footballTeamCompetitions: (competition: string) =>
     `/v2/competitions/${competition}/teams`,
 
-  footballBestScorersCompetitions: (competition: string) =>
-    `/v2/competitions/${competition}/scorers`,
+  footballBestScorersCompetitions: (competition: string, limit:number) =>
+    `/v2/competitions/${competition}/scorers?limit=${limit}`,
 
   footballMatches: (param: IFiltersAPI) => {
     let result: string = "";

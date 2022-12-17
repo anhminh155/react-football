@@ -1,7 +1,8 @@
 import { Table } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import CLoading from "../../components/CLoading";
-import { useSelectorRoot } from "../../redux/hooks";
+import { fetchBestScorersCompetitionsFootball } from "../../redux/controller/football.slice";
+import { useDispatchRoot, useSelectorRoot } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { Props } from "../../types/define";
 import { IStanding, ITable } from "../../types/football-type";
@@ -11,13 +12,14 @@ interface ITableStandings extends Props {
   onSelectTable: any;
 }
 function TableStandings({ onSelectTable }: ITableStandings) {
+  const dispatch = useDispatchRoot();
   const { competitionsStandings, loadingFootball } = useSelectorRoot(
     (state: RootState) => state.football
   );
   const [activeTab, setActiveTab] = useState<
     "standings" | "bracket" | "bestPlayer"
   >("standings");
-  
+
   const seasonYear = new Date(
     competitionsStandings?.season.startDate
   ).getFullYear();
@@ -93,7 +95,7 @@ function TableStandings({ onSelectTable }: ITableStandings) {
         </div>
       </div>
       <div className="bg-white flex flex-col">
-        <ul className="font-medium border-b-2">
+        <ul className="font-semibold border-b-2">
           <li
             onClick={() => setActiveTab("standings")}
             className={`${
@@ -128,7 +130,25 @@ function TableStandings({ onSelectTable }: ITableStandings) {
         {(activeTab === "standings" && RenderTable()) ||
           (activeTab === "bracket" && <div>bracket</div>) ||
           (activeTab === "bestPlayer" && (
-            <BestPlayer competition={competitionsStandings?.competition.code} />
+            <div className="mb-10">
+              <BestPlayer
+                competition={competitionsStandings?.competition.code}
+              />
+              <div
+                onClick={() => {
+                  // console.log(competitionsStandings.competition.code);                  
+                  dispatch(
+                    fetchBestScorersCompetitionsFootball({
+                      competition: competitionsStandings.competition.code!,
+                      limit: 200,
+                    })
+                  );
+                }}
+                className="text-center pt-4 cursor-pointer hover:underline"
+              >
+                More...
+              </div>
+            </div>
           ))}
       </div>
     </div>

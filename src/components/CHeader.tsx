@@ -49,7 +49,9 @@ function CHeader({}: Props) {
       </div>
       <div className="shadow-md h-11 flex items-center px-6 text-xl divide-x bg-white">
         <div
-          onClick={() => dispatch(setNavbar("home"))}
+          onClick={() => {
+            dispatch(setNavbar("home"));
+          }}
           className={`${
             navbar === "home" ? "font-bold text-[#3fa338]" : ""
           } px-2 h-full text-center cursor-pointer flex items-center border border-l-1 border-r-transparent hover:text-[#3fa338]`}
@@ -57,28 +59,37 @@ function CHeader({}: Props) {
           <Link to="/home">Home</Link>
         </div>
         <div
-          onClick={() => dispatch(setNavbar("matches"))}
+          onClick={() => {
+            dispatch(setNavbar("matches"));
+            navigate("/matches/PL");
+          }}
           className={`${
             navbar === "matches" ? "font-bold text-[#3fa338]" : ""
           } px-2 h-full text-center cursor-pointer flex items-center hover:text-[#3fa338]`}
         >
-          <Link to="/matches/PL">Matches</Link>
+          Matches
         </div>
         <div
-          onClick={() => dispatch(setNavbar("rankings"))}
+          onClick={() => {
+            dispatch(setNavbar("rankings"));
+            navigate("/rankings/PL");
+          }}
           className={`${
             navbar === "rankings" ? "font-bold text-[#3fa338]" : ""
           } px-2 h-full text-center cursor-pointer flex items-center hover:text-[#3fa338]`}
         >
-          <Link to="/rankings/PL">Rankings</Link>
+          Rankings
         </div>
         <div
-          onClick={() => dispatch(setNavbar("bracket"))}
+          onClick={() => {
+            dispatch(setNavbar("bracket"));
+            navigate("/bracket");
+          }}
           className={`${
             navbar === "bracket" ? "font-bold text-[#3fa338]" : ""
           } px-2 h-full text-center cursor-pointer flex items-center hover:text-[#3fa338]`}
         >
-          <Link to="/bracket">Bracket</Link>
+          Bracket
         </div>
       </div>
     </header>

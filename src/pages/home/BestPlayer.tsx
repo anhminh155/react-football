@@ -17,7 +17,12 @@ function BestPlayer({ competition }: IBestPlayer) {
     (state: RootState) => state.football
   );
   useEffect(() => {
-    dispatch(fetchBestScorersCompetitionsFootball(competition || ""));
+    dispatch(
+      fetchBestScorersCompetitionsFootball({
+        competition: competition!,
+        limit: 10,
+      })
+    );
   }, []);
 
   const RenderTable = () => {

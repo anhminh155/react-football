@@ -78,7 +78,7 @@ const footballSlice = createSlice({
               [`${action.payload.idArea}`] : payload.competitions
             },
           };
-          state.loadingFootball = false;
+          state.loadingModalFootball = false;
         }
         // action.payload.message ?? (state.rootCompetitions = action.payload);
         // state.loadingFootball = false;
@@ -200,12 +200,17 @@ export const fetchTeamMatchesCompetitionsFootball = createAsyncThunk(
   }
 );
 
+
+export type IBestScorers= {
+  competition: string;
+  limit: number;
+};
 export const fetchBestScorersCompetitionsFootball = createAsyncThunk(
   "football/fetchBestScorersCompetitions",
-  async (standing: string, { dispatch }) => {
+  async ({competition, limit}:IBestScorers, { dispatch }) => {
     try {
       const res: any = await Http.get(
-        API_FOOTBALL.footballBestScorersCompetitions(standing)
+        API_FOOTBALL.footballBestScorersCompetitions(competition,limit)
       );
       if (res.data) {
         const data = res.data as unknown;

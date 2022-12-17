@@ -1,16 +1,20 @@
 import { Badge, Table } from "flowbite-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { IPathNameChild } from "../..";
 import Utils from "../../common/utils";
 import CLoading from "../../components/CLoading";
 import CTooltip from "../../components/CTooltip";
-import { fetchHead2HeadFootball } from "../../redux/controller/football.slice";
+import {
+  fetchCompetitionStandingsFootball,
+  fetchHead2HeadFootball,
+} from "../../redux/controller/football.slice";
 import { useDispatchRoot, useSelectorRoot } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { Props } from "../../types/define";
-import { IMatch } from "../../types/football-matches";
+import { Match } from "../../types/football-matches";
+import { format } from "date-fns";
 const iconWarning: string = require("../../assets/icons/warning.svg").default;
 
 interface InfoMatches extends Props {
@@ -26,13 +30,10 @@ function InfoMatches({ idMatches }: InfoMatches) {
     loadingModalFootball,
   } = useSelectorRoot((state: RootState) => state.football);
   const navigate = useNavigate();
-  const { idMatch } = useParams<IPathNameChild>();
-
-  //getData
-  const dataMatch: any = rootMatches.matches.find(
-    (e: IMatch) => e.id === Number(idMatch)
+  const { idMatch, codeMatches } = useParams<IPathNameChild>();
+  const [dataMatch, setDataMatch] = useState<Match | undefined>(
+    rootMatches.matches.find((e: Match) => e.id === Number(idMatch))
   );
- 
 
   const progressAway: any =
     (head2Head.aggregates.awayTeam.wins /
@@ -48,11 +49,24 @@ function InfoMatches({ idMatches }: InfoMatches) {
     100;
 
   useEffect(() => {
+    // const params: IFiltersAPI = {
+    //   competitions: codeMatches!,
+    // };
+    // dispatch(fetchMatchesFootball(params))
     dispatch(fetchHead2HeadFootball(Number(idMatch)));
+    dispatch(fetchCompetitionStandingsFootball(codeMatches!));
   }, []);
 
+  useEffect(() => {
+    setDataMatch(
+      rootMatches.matches.find((e: Match) => e.id === Number(idMatch))
+    );
+  }, [rootMatches]);
+
+  console.log(dataMatch);
+
   return (
-    <div className="bg-white rounded-md p-2">
+    <div className="bg-white rounded-md p-3">
       <div>
         <div className="flex justify-between pb-3">
           <button
@@ -76,13 +90,23 @@ function InfoMatches({ idMatches }: InfoMatches) {
               </svg>
             </div>
           </button>
-          <span className="font-semibold text-2xl">123123</span>
+          <span className="font-semibold text-2xl capitalize">{`${
+            dataMatch ? Utils.removeSpecialKey(dataMatch?.stage!, "_") : ""
+          }/Matchday ${dataMatch?.season.currentMatchday}`}</span>
           <span className="font-medium text-2xl w-14"></span>
         </div>
         <div className="pb-4">
           <Table>
-            <Table.Head>
-              <Table.HeadCell className="w-20">Head two head</Table.HeadCell>
+            <Table.Head className="text-base">
+              <Table.HeadCell className="w-20">
+                <div>
+                  {dataMatch &&
+                    format(new Date(dataMatch?.utcDate!), "dd-MM-yyyy")}
+                </div>
+                <div>
+                  {dataMatch && format(new Date(dataMatch?.utcDate!), "hh:mm")}
+                </div>
+              </Table.HeadCell>
               <Table.HeadCell className="text-center">
                 <div className="flex items-center justify-center">
                   <span>{head2Head.aggregates.awayTeam.name}</span>
@@ -96,16 +120,79 @@ function InfoMatches({ idMatches }: InfoMatches) {
                 </div>
               </Table.HeadCell>
             </Table.Head>
-            <Table.Body className="divide-y whitespace-nowrap font-medium text-gray-900 dark:text-white">
+            <Table.Body className="divide-y whitespace-nowrap font-bold text-gray-900 dark:text-white">
               <Table.Row className="">
-                <Table.Cell className="">Number Of Matches</Table.Cell>
+                <Table.Cell className="font-bold">Odds</Table.Cell>
                 <Table.Cell className="text-center" colSpan={2}>
-                  {head2Head.aggregates.numberOfMatches}
+                  {dataMatch?.odds.awayWin
+                    ? `${dataMatch?.odds.awayWin}/${dataMatch?.odds.draw}/${dataMatch?.odds.homeWin}`
+                    : ""}
                 </Table.Cell>
               </Table.Row>
+              {dataMatch?.status === "POSTPONED" ? (
+                <Table.Row className="">
+                  <Table.Cell className="">HalfTime</Table.Cell>
+                  <Table.Cell
+                    className="text-center font-semibold text-orange-400"
+                    colSpan={2}
+                  >
+                    {dataMatch?.status}
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                ""
+              )}
+              {dataMatch?.score.winner ? (
+                <React.Fragment>
+                  <Table.Row className="">
+                    <Table.Cell className="">HalfTime</Table.Cell>
+                    <Table.Cell className="text-center">
+                      {dataMatch?.score.halfTime.awayTeam}
+                    </Table.Cell>
+                    <Table.Cell className="text-center">
+                      {dataMatch?.score.halfTime.homeTeam}
+                    </Table.Cell>
+                  </Table.Row>
+                  <Table.Row className="">
+                    <Table.Cell className="">Fulltime</Table.Cell>
+                    <Table.Cell className="text-center">
+                      {dataMatch?.score.penalties.awayTeam
+                        ? dataMatch?.score.fullTime.awayTeam -
+                          dataMatch?.score.penalties.awayTeam
+                        : dataMatch?.score.fullTime.awayTeam}
+                    </Table.Cell>
+                    <Table.Cell className="text-center">
+                      {dataMatch?.score.penalties.homeTeam
+                        ? dataMatch?.score.fullTime.homeTeam -
+                          dataMatch?.score.penalties.homeTeam
+                        : dataMatch?.score.fullTime.homeTeam}
+                    </Table.Cell>
+                  </Table.Row>
+                  <Table.Row className="">
+                    <Table.Cell className="">Penalties</Table.Cell>
+                    <Table.Cell className="text-center">
+                      {dataMatch?.score.penalties.awayTeam ?? "-"}
+                    </Table.Cell>
+                    <Table.Cell className="text-center">
+                      {dataMatch?.score.penalties.homeTeam ?? "-"}
+                    </Table.Cell>
+                  </Table.Row>
+                  <Table.Row className="">
+                    <Table.Cell className="">Duration</Table.Cell>
+                    <Table.Cell className="text-center capitalize" colSpan={2}>
+                      {Utils.removeSpecialKey(dataMatch?.score.duration, `_`)}
+                    </Table.Cell>
+                  </Table.Row>
+                </React.Fragment>
+              ) : (
+                ""
+              )}
               <Table.Row className="">
-                <Table.Cell colSpan={3} className="text-center bg-green-500">
-                  <span className="text-center font-semibold text-lg uppercase">
+                <Table.Cell
+                  colSpan={3}
+                  className="text-center bg-[#01b243] -my-2"
+                >
+                  <span className="text-center font-semibold uppercase text-white">
                     Head two head
                   </span>
                 </Table.Cell>

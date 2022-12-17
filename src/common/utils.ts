@@ -50,5 +50,8 @@ class Utils {
       page_number * page_size + page_size
     );
   }
+  static removeSpecialKey(key: string, special: string, replace?:string):string {
+    return key.split(special).join(`${replace ?? ` `}`).toLowerCase()
+  }
 }
 export default Utils;
